@@ -9,7 +9,6 @@ let authPlugin = {
 
         await server.register(jwt)
 
-        // proceed to authentication
 
         server.auth.strategy( 'jwt', 'jwt', {
             keys: process.env.JWT_SECKEY,

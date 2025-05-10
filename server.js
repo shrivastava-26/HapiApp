@@ -1,14 +1,14 @@
 // Entry point of the Hapi.js application.
 // Responsible for initializing the server, registering plugins, and starting the app.
 
-
+ 
 'use strict';
-
 
 let hapi = require('@hapi/hapi');
 const routePlugin = require('./plugins/routePlugin');
 const authPlugin = require('./plugins/authPlugin');
 const { connectToDb } = require('./config/dbConnection');
+const swaggerPlugin = require('./plugins/swaggerPlugin')
 require('dotenv').config();
 
 let server = hapi.server({
@@ -21,7 +21,8 @@ let startServer = async () => {
 
 await server.register([
     routePlugin,
-    authPlugin
+    authPlugin,
+    swaggerPlugin
 ]);
 
   await connectToDb();

@@ -1,77 +1,119 @@
-const { options } = require('joi');
-const {alluser, addedUser, deletedUser, singleUser, updatedUser, loggedinUser, signupedUser} = require('../controllers/userController')
+const { alluser, addedUser, deletedUser, singleUser, updatedUser, loggedinUser, signupedUser } = require('../controllers/userController')
 let userSchema = require('../schemas/userSchema');
+const Joi = require('joi')
+
 let userRoutes = [
+
     {
-        method:'GET',
-        path:'/getuser',
-        handler:alluser
+        method: 'GET',
+        path: '/getuser',
+        options: {
+            tags: ['api'],
+            handler: alluser,
+        }
     },
 
     {
-        method:'GET',
-        path:'/getsingleuser/{uid}',
-        handler:singleUser
-    },
-
-    {
-        method:'POST',
-        path:'/adduser',
-        handler:addedUser,
-
-        options:{
-            validate:{
-                payload:userSchema
+        method: 'GET',
+        path: '/getsingleuser/{uid}',
+        options: {
+            handler: singleUser,
+            tags: ['api'],
+            validate: {
+                params: Joi.object({
+                    uid: Joi.number().required().description('User ID')
+                })
             }
         }
     },
-    
+
+    { 
+        method: 'POST',
+        path: '/adduser',
+
+        options: {
+            handler: addedUser,
+            tags: ['api'],
+            validate: {
+                payload: userSchema
+            }
+        }
+    },
+
+
     {
         method: 'PUT',
         path: '/updateuser/{uid}',
-        handler:updatedUser
+        options: {
+            handler: updatedUser,
+            tags: ['api'],
+            validate: {
+                params: Joi.object({
+                    uid: Joi.number().required().description('User ID')
+                }),
+                payload: userSchema
+            }
+        }
     },
 
     {
-        method:'DELETE',
+        method: 'DELETE',
         path: '/deleteuser/{uid}',
-        handler:deletedUser
-    },
-
-    {
-        method:'POST',
-        path:'/login',
-        handler:loggedinUser,
-
-        options:{
-            auth:false
+        options: {
+            handler: deletedUser,
+            tags: ['api'],
+            validate: {
+                params: Joi.object({
+                    uid: Joi.number().required().description('User ID')
+                })
+            }
         }
     },
 
     {
-        method:'POST',
-        path:'/signup',
-        handler:signupedUser,
+        method: 'POST',
+        path: '/login',
 
-        options:{
-            validate:{
-                payload:userSchema
+        options: {
+            handler: loggedinUser,
+            tags: ['api'],
+            validate: {
+                payload: userSchema
             },
-            auth:false
+            auth: false,
         }
     },
+
+    {
+        method: 'POST',
+        path: '/signup',
+
+        options: {
+            tags: ['api'],
+            handler: signupedUser,
+            validate: {
+                payload: userSchema
+            },
+            auth: false,
+        }
+    },
+
     {
         method: 'GET',
-        path:'/admin',
-        handler:  (req, h) => {
+        path: '/admin',
+        options: {
+            tags: ['api'],
+            handler: (req, h) => {
 
-            let {dept} = req.auth.credentials;
+                let { dept } = req.auth.credentials;
 
-            if(!dept){
-                return h.response({success:false, message:'not authorized to access'}).code(403)
-            }
-            return h.response({success:true, message:'welcome to admin route'}).code(200)
+                if (!dept) {
+                    return h.response({ success: false, message: 'not authorized to access' }).code(403)
+                }
+                return h.response({ success: true, message: 'welcome to admin route' }).code(200)
+            },
         }
+
     }
 ]
 

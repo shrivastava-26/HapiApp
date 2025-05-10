@@ -19,6 +19,3 @@ let connectToDb = async () => {
 }
 
 module.exports = {db, connectToDb};
-
-
-

@@ -1,13 +1,27 @@
 const {db} = require('../config/dbConnection');
 const getAllUser = async () => {
-    const { rows } = await db.query('SELECT * FROM users');
-    return rows;
+    try {
+        const { rows } = await db.query('SELECT * FROM users');
+        return rows;
+    } catch (error) {
+       console.log('error while fetch user data',error);
+       throw error;
+    }
 };
 
 
 const getSingleUser = async (id) => {
+  try {
+
     const { rows } = await db.query('SELECT * FROM users WHERE id = $1', [id]);
     return rows[0];
+
+  } catch (error) {
+
+    console.log('error while fetch single user data', error)
+    throw error;
+
+  }
 };
 
 
@@ -46,15 +60,21 @@ const deleteUser = async (id) => {
         return rows[0];
     } catch (error) {
         console.error('Delete error:', error.message);
-        throw error;
+        throw error
     }
 };
 
 
 let findUserByEmail = async({email}) => {
 
+  try {
     let {rows} = await db.query('SELECT * FROM users WHERE email = $1', [email])
-    return rows[0]
+    return rows[0];
+  } catch (error) {
+    console.log("error while checking user in db",error.message)
+    throw error 
+  }
+
 }
 
 
