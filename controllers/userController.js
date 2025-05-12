@@ -3,11 +3,13 @@
 // works between routes and models
 
 
-const jwt = require("@hapi/jwt");
-const { redisClient } = require("../utils/redisClient");
+const jwt = require("@hapi/jwt")
+const { redisClient } = require("../utils/redisClient")
 const sendMail = require('../rabbitmq/exchanges/directExchange')
-let {getAllUser, deleteUser, getSingleUser, updateUser, createUser, findUserByEmail} = require("../models/userModel");
-const fanoutExg = require("../rabbitmq/exchanges/fanoutExchange");
+let {getAllUser, deleteUser, getSingleUser, updateUser, createUser, findUserByEmail} = require("../models/userModel")
+const fanoutExg = require("../rabbitmq/exchanges/fanoutExchange")
+const topicExch = require("../rabbitmq/exchanges/topicExchange")
+const headerExch = require("../rabbitmq/exchanges/headerExchange")
 
 
 const alluser = async (req, h) => {
@@ -42,7 +44,7 @@ const alluser = async (req, h) => {
       })
       .code(200);
   } catch (err) {
-    console.error("Handler error:", err.message);
+    console.error(err.message);
     return h
       .response({ success: false, message: "Internal Server Error" })
       .code(500);
@@ -91,8 +93,11 @@ const singleUser = async (req, h) => {
 const updatedUser = async (req, h) => {
   try {
     const isUpdatedUser = await updateUser(req.params.uid, req.payload);
+    const {email,user} = req.payload;
 
     if (isUpdatedUser) {
+      // await topicExch(email, user);
+      await headerExch(user,email)
       return h
         .response({
           success: true,

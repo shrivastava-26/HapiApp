@@ -7,8 +7,8 @@ let userRoutes = [
     {
         method: 'GET',
         path: '/getuser',
-        options: {
-            tags: ['api'],
+        options: {  //! to add extra feature to routes we use option object
+            tags: ['api'],  //todo  tag used for documentation purpose 
             handler: alluser,
         }
     },
@@ -22,6 +22,7 @@ let userRoutes = [
             validate: {
                 params: Joi.object({
                     uid: Joi.number().required().description('User ID')
+                    //! expects parameter in the url 
                 })
             }
         }
@@ -35,7 +36,7 @@ let userRoutes = [
             handler: addedUser,
             tags: ['api'],
             validate: {
-                payload: userSchema
+                payload: userSchema //!joi validation
             }
         }
     },

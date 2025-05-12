@@ -1,9 +1,6 @@
 // Entry point of the Hapi.js application.
 // Responsible for initializing the server, registering plugins, and starting the app.
 
- 
-'use strict';
-
 let hapi = require('@hapi/hapi');
 const routePlugin = require('./plugins/routePlugin');
 const authPlugin = require('./plugins/authPlugin');
